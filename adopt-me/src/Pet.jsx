@@ -1,4 +1,5 @@
-const Pet = (props) => {
+const Pet = ({ name, animal, breed, images, location, id }) => {
+  let hero = "http://pets-images.dev-apis.com/pets/none.jpg";
   return (
     <div>
       <h1>{props.name}</h1>
