@@ -14,8 +14,10 @@ const SearchParams = () => {
   /*   const [location, setLocation] = React.useState(""); */
   const [animal, setAnimal] = React.useState("");
   /* const [breed, setBreed] = React.useState(""); */
-  const [pets, setPets] = React.useState([]);
   const breeds = useBreedList(animal);
+
+  const results = useQuery(["search", requestParams], fetchSearch);
+  const pets = results?.data?.pets ?? [];
 
   /*   React.useEffect(() => {
     requestPets();
@@ -35,17 +37,18 @@ const SearchParams = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          requestPets();
+          const formData = new FormData(e.target);
+          const obj = {
+            animal: formData.get("animal") ?? "",
+            location: formData.get("location") ?? "",
+            breed: formData.get("breed") ?? "",
+          };
+          setRequestParams(obj);
         }}
       >
         <label htmlFor="location">
           Location
-          <input
-            onChange={(e) => setLocation(e.target.value)}
-            id="location"
-            value={location}
-            placeholder="Location"
-          />
+          <input id="location" placeholder="Location" name="location" />
         </label>
         <label htmlFor="animal">
           Animal
@@ -55,7 +58,6 @@ const SearchParams = () => {
             value={animal}
             onChange={(e) => {
               setAnimal(e.target.value);
-              setBreed("");
             }}
           >
             <option />
@@ -67,13 +69,7 @@ const SearchParams = () => {
 
         <label htmlFor="breed">
           Breed
-          <select
-            name="breed"
-            id="breed"
-            disabled={breeds[0].length === 0}
-            value={breed}
-            onChange={(e) => setBreed(e.target.value)}
-          >
+          <select name="breed" id="breed" disabled={breeds[0].length === 0}>
             <option />
             {breeds[0].map((breed) => (
               <option key={breed}>{breed}</option>
