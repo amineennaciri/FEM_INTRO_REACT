@@ -1,31 +1,17 @@
-import React from "react";
-
-const localCache = {};
+import { useQuery } from "@tanstack/react-query";
+import fetchBreedList from "./fetchBreedList";
 
 export default function useBreedList(animal) {
-  const [breedList, setBreedList] = React.useState([]);
-  const [status, setStatus] = React.useState("unloaded");
-
-  React.useEffect(() => {
-    if (!animal) {
-      setBreedList([]);
-    } else if (localCache[animal]) {
-      setBreedList(localCache[animal]);
-    } else {
-      requestBreedList();
-    }
-    async function requestBreedList() {
-      setBreedList([]);
-      setStatus("loading");
-      const res = await fetch(
-        `https://pets-v2.dev-apis.com/pets?animal=${animal}`
-      );
-      const json = await res.json();
-      localCache[animal] = json.breeds || [];
-      setBreedList(localCache[animal]);
-      setStatus("loaded");
-    }
-  }, [animal]);
-
-  return [breedList, status];
+  const results = useQuery(["breeds", animal], fetchBreedList);
+  return [
+    results?.data?.breeds ?? [],
+    results.status,
+  ]; /*this is saying if it is available then give me the results, the "??" means that if results?.data?.breeds fails then give me an empty array [] */
+  /*
+    In summary, the useBreedList hook returns an array with two elements:
+    
+    The first element is the breed list (results?.data?.breeds), with an empty array ([]) as a fallback in case the breed list is not available or the data fetching operation encounters an error.
+    
+    The second element is the status of the data fetching operation (results.status).
+  */
 }

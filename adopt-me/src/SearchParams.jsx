@@ -1,16 +1,23 @@
 import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import Results from "./Results";
 import useBreedList from "./useBreedList";
+import fetchSearch from "./fetchSearch";
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 /* const BREEDS = []; */
 const SearchParams = () => {
-  const [location, setLocation] = React.useState("");
+  const [requestParams, setRequestParams] = React.useState({
+    location: "",
+    breed: "",
+    animal: "",
+  });
+  /*   const [location, setLocation] = React.useState(""); */
   const [animal, setAnimal] = React.useState("");
-  const [breed, setBreed] = React.useState("");
+  /* const [breed, setBreed] = React.useState(""); */
   const [pets, setPets] = React.useState([]);
   const breeds = useBreedList(animal);
 
-  React.useEffect(() => {
+  /*   React.useEffect(() => {
     requestPets();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -21,7 +28,7 @@ const SearchParams = () => {
     );
     const json = await res.json();
     setPets(json.pets);
-  }
+  } */
 
   return (
     <div className="search-params">
@@ -63,12 +70,12 @@ const SearchParams = () => {
           <select
             name="breed"
             id="breed"
-            disabled={breed.length === 0}
+            disabled={breeds[0].length === 0}
             value={breed}
             onChange={(e) => setBreed(e.target.value)}
           >
             <option />
-            {breeds.map((breed) => (
+            {breeds[0].map((breed) => (
               <option key={breed}>{breed}</option>
             ))}
           </select>
