@@ -7,7 +7,20 @@ class ErrorBoundary extends Component {
     return { hasError: true };
   }
   componentDidCatch(error, info) {
+    //typically you would log this to something like TrackJS or NewRelic
     console.error("ErrorBoundary component caught an error", error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <h2>
+          There was an error with this listing.{" "}
+          <Link to={"/"}>Click here to go back to the home page.</Link>
+        </h2>
+      );
+    }
+    return this.props.children;
   }
 }
 /*you must use class component for catching errors, there is nothing else for function component yet*/
+export default ErrorBoundary;
